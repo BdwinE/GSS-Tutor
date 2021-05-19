@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-template
+  labels:
+    app: app-template
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-template
+  template:
+    metadata:
+      labels:
+        app: app-template
+    spec:
+      containers:
+        - name: app-template
+          image: fevtutorcr.azurecr.io/app-template
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000

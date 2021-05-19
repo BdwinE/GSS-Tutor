@@ -1,0 +1,127 @@
+http:
+  port: 8000
+apiEndpoints:
+  messaging:
+    host: localhost
+    paths: '/messaging/*'
+  notification:
+    host: localhost
+    paths: '/notifications/*'
+  scheduling:
+    host: localhost
+    paths: '/scheduling/*'
+  user:
+    host: localhost
+    paths: '/users/*'
+serviceEndpoints:
+  messagingService:
+    url: 'http://localhost:3001/'
+  notificationService:
+    url: 'http://localhost:8081/'
+  schedulingService:
+    url: 'http://localhost:5000/'
+  userService:
+    url: 'http://localhost:3002/'
+policies:
+  - rewrite
+  - cors
+  # - jwt
+  - proxy
+  - rate-limit
+pipelines:
+  messagingPipeline:
+    apiEndpoints:
+      - messaging
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - rewrite: 
+        -
+          condition:
+            name: regexpmatch
+            match: ^/messaging/?(.*)$
+          action:
+            rewrite: /$1 
+      - cors:
+        - action:
+            origin: '*'
+      # - jwt:
+      #   - action:
+      #       secretOrPublicKeyFile: .key/devgss.pem
+      #       checkCredentialExistence: false
+      - proxy:
+          - action:
+              serviceEndpoint: messagingService 
+              changeOrigin: true
+  notificationPipeline:
+    apiEndpoints:
+      - notification
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - rewrite: 
+        -
+          condition:
+            name: regexpmatch
+            match: ^/notifications/?(.*)$
+          action:
+            rewrite: /$1 
+      - cors:
+        - action:
+            origin: '*'
+      # - jwt:
+      #   - action:
+      #       secretOrPublicKeyFile: .key/devgss.pem
+      #       checkCredentialExistence: false
+      - proxy:
+          - action:
+              serviceEndpoint: notificationService 
+              changeOrigin: true
+  schedulingPipeline:
+    apiEndpoints:
+      - scheduling
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - rewrite: 
+        -
+          condition:
+            name: regexpmatch
+            match: ^/scheduling/?(.*)$
+          action:
+            rewrite: /$1 
+      - cors:
+        - action:
+            origin: '*'
+      # - jwt:
+      #   - action:
+      #       secretOrPublicKeyFile: .key/devgss.pem
+      #       checkCredentialExistence: false
+      - proxy:
+          - action:
+              serviceEndpoint: schedulingService 
+              changeOrigin: true
+  userPipeline:
+    apiEndpoints:
+      - user
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - rewrite: 
+        -
+          condition:
+            name: regexpmatch
+            match: ^/users/?(.*)$
+          action:
+            rewrite: /$1 
+      - cors:
+        - action:
+            origin: '*'
+      # - jwt:
+      #   - action:
+      #       secretOrPublicKeyFile: .key/devgss.pem
+      #       checkCredentialExistence: false
+      - proxy:
+          - action:
+              serviceEndpoint: userService 
+              changeOrigin: true
